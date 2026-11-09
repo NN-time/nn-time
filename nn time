@@ -1,1 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Тренировка точности</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: #1a1a2e;
+      font-family: Arial, sans-serif;
+      user-select: none;
+    }
+
+    #stats {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-size: 18px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 12px 18px;
+      border-radius: 10px;
+      z-index: 100;
+    }
+
+    #target {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background: #e94560;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 15px #e94560;
+      transition: background 0.1s;
+    }
+
+    #target:active {
+      background: #ff6b81;
+    }
+
+    #message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 28px;
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="stats">
+    Попадания: <span id="hits">0</span><br>
+    Всего кликов: <span id="total">0</span><br>
+    Точность: <span id="accuracy">0</span>%
+  </div>
+
+  <div id="target"></div>
+  <div id="message">Тренировка окончена!<br>Размер цели стал слишком маленьким.</div>
+
+  <script>
+    const target = document.getElementById('target');
+    const hitsSpan = document.getElementById('hits');
+    const totalSpan = document.getElementById('total');
+    const accuracySpan = document.getElementById('accuracy');
+    const message = document.getElementById('message');
+
+    let size = 50;          
+    let hits = 0;           
+    let totalClicks = 0;    
+
+    
+    moveTarget();
+
+    
+    target.addEventListener('mousedown', function () {
+      hits++;
+      size -= 1;
+
+      
+      target.style.width = size + 'px';
+      target.style.height = size + 'px';
+
+      
+      moveTarget();
+
+      updateStats();
+
+      
+      if (size <= 5) {
+        target.style.display = 'none';
+        message.style.display = 'block';
+      }
+    });
+
+    
+    document.addEventListener('mousedown', function () {
+      totalClicks++;
+      updateStats();
+    });
+
+    
+    function moveTarget() {
+      const maxX = window.innerWidth - size;
+      const maxY = window.innerHeight - size;
+
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
+
+      target.style.left = randomX + 'px';
+      target.style.top = randomY + 'px';
+    }
+
+    
+    function updateStats() {
+      hitsSpan.textContent = hits;
+      totalSpan.textContent = totalClicks;
+
+      const accuracy = totalClicks === 0 ? 0 : Math.round((hits / totalClicks) * 100);
+      accuracySpan.textContent = accuracy;
+    }
+  </script>
+</body>
+</html>
